@@ -17,4 +17,6 @@ Accept-Range header for paging.
 
 This turned out to a bit more popular than I thought, so it's going to take
 some time to fulfill all the requests I received. Once I finish looking through
-your API, I'll send an email with suggestions 
+your API, I'll send an email with my comments. Talk to you soon!
+
+Kyle

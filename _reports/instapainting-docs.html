@@ -1,0 +1,418 @@
+<!DOCTYPE HTML><html><head><title>Instapainting.com API documentation</title><meta http-equiv=X-UA-Compatible content="IE=edge"><meta http-equiv=Content-Type content="text/html; charset=utf-8"><meta name=generator content="https://github.com/kevinrenskers/raml2html 0.30.0"><link rel=stylesheet href=http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css><link rel=stylesheet href=http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.1/styles/default.min.css><script type=text/javascript src=http://code.jquery.com/jquery-1.11.0.min.js></script><script type=text/javascript src=http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js></script><script type=text/javascript src=http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.1/highlight.min.js></script><script type=text/javascript>
+        $(document).ready(function() {
+            $('.page-header pre code, .top-resource-description pre code').each(function(i, block) {
+                hljs.highlightBlock(block);
+            });
+
+            $('[data-toggle]').click(function() {
+                var selector = $(this).data('target') + ' pre code';
+                $(selector).each(function(i, block) {
+                    hljs.highlightBlock(block);
+                });
+            });
+        });
+    </script><style>
+        .hljs {
+            background: transparent;
+        }
+        .parent {
+            color: #999;
+        }
+        .list-group-item > .badge {
+            float: none;
+            margin-right: 6px;
+        }
+        .panel-title > .methods {
+            float: right;
+        }
+        .badge {
+            border-radius: 0;
+            text-transform: uppercase;
+            width: 70px;
+            font-weight: normal;
+            color: #f3f3f6;
+            line-height: normal;
+        }
+        .badge_get {
+            background-color: #63a8e2;
+        }
+        .badge_post {
+            background-color: #6cbd7d;
+        }
+        .badge_put {
+            background-color: #22bac4;
+        }
+        .badge_delete {
+            background-color: #d26460;
+        }
+        .list-group, .panel-group {
+            margin-bottom: 0;
+        }
+        .panel-group .panel+.panel-white {
+            margin-top: 0;
+        }
+        .panel-group .panel-white {
+            border-bottom: 1px solid #F5F5F5;
+            border-radius: 0;
+        }
+        .panel-white:last-child {
+            border-bottom-color: white;
+            -webkit-box-shadow: none;
+            box-shadow: none;
+        }
+        .panel-white .panel-heading {
+            background: white;
+        }
+        .tab-pane ul {
+            padding-left: 2em;
+        }
+        .tab-pane h2 {
+            font-size: 1.2em;
+            padding-bottom: 4px;
+            border-bottom: 1px solid #ddd;
+        }
+        .tab-pane h3 {
+            font-size: 1.1em;
+        }
+        .tab-content {
+            border-left: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
+            padding: 10px;
+        }
+        #sidebar {
+            margin-top: 30px;
+        }
+        .top-resource-description {
+            border-bottom: 1px solid #ddd;
+            background: #fcfcfc;
+            padding: 15px 15px 0 15px;
+            margin: -15px -15px 10px -15px;
+        }
+        .resource-description {
+            border-bottom: 1px solid #fcfcfc;
+            background: #fcfcfc;
+            padding: 15px 15px 0 15px;
+            margin: -15px -15px 10px -15px;
+        }
+        .panel > .panel-body > .panel-group > .panel:first-child .resource-description {
+            display: none;
+        }
+        .list-group .badge {
+            float: left;
+        }
+        .method_description {
+            margin-left: 85px;
+        }
+        .method_description p:last-child {
+            margin: 0;
+        }
+    </style></head><body data-spy=scroll data-target=#sidebar><div class=container><div class=row><div class=col-md-9 role=main><div class=page-header><h1>Instapainting.com API documentation <small>version v1</small></h1><p>https://instapainting.com/api/v1</p><h3 id=Authentication><a href=#Authentication>Authentication</a></h3><h1 id=overview>Overview</h1><p>Your account has two keys: a public key and a private key. If you are making all your calls from a trusted environment, like your own server, use the private key. The public key may be limited in permissions and calls. Currently only the list all orders call is limited to the private key. All other API calls can be made with the public key.</p><p>All API calls must be authenticated with one of the keys.</p><h1 id=supplying-keys>Supplying Keys</h1><p>When making all API calls, you must provide HTTP Basic Auth credentials. To use your public key to make calls, simply provide the public key for the <em>username</em> part of Basic Auth. To use the private key, supply it for the password part.</p><p>To supply only the username part, you can place a colon after the public key when using cURL, or you can place the colon before the key when using your private key, like so:</p><pre><code># Supplying a private key
+curl --user :39e4a8b25b21dc29b4093cadb9dc4d0e0da9fa7a
+</code></pre><pre><code># Supplying a public key
+curl --user 39e4a8b25b21dc29b4093cadb9dc4d0e0da9fa7a:
+</code></pre><h3 id=Quickstart><a href=#Quickstart>Quickstart</a></h3><h1 id=overview>Overview</h1><p>Placing orders consists of</p><ol><li>Creating an order</li><li>Adding items to the order</li><li>Collecting payment and shipping information and submitting the order</li></ol><p>Step 3 can be achieved by directly placing the order through the API using a credit card on file, or it can be done through a hosted payment page provided by Instapainting. This payment page can be a redirect or embedded inside a website or application to allow us to collect shipping and payment information directly from the customer while still mainting a seamless experience.</p><h1 id=create-an-order>Create an order</h1><p>POST <a href=https://instapainting.com/api/v1/order>https://instapainting.com/api/v1/order</a></p><p>You can send a JSON payload or urlencoded form parameters in the body. None of the parameters are required, and in fact the customer information will be collected later at the payment URI. Some of the information can be used to prefill forms for the customer. The available parameters are in the API reference.</p><p>An ID and a payment URI will be returned in the response like this:</p><pre><code>{
+  "id": "53d33e6d1d41c8543bc2d1f2",
+  "payment_uri": "https://instapainting.com/orders/build/53d33e6d1d41c8543bc2d1f2?partner=1"
+}
+</code></pre><p>Save the ID, as you&#39;ll need it to add items to this order.</p><h1 id=add-items>Add items</h1><p>After an order is created, make this call</p><p>POST <a href=https://instapainting.com/api/v1/order/{orderId}/items>https://instapainting.com/api/v1/order/{orderId}/items</a></p><p>You must send a multipart/form-data request with these fields:</p><ul><li><strong><em>coords</em></strong> (required) - The x,y,x2,y2 pixel coords of the picture to paint.</li><li><strong><em>height</em></strong> (required) - The height of the painted area in inches.</li><li><strong><em>width</em></strong> (required) - The width of the painted area in inches.</li><li><strong><em>instructions</em></strong> (optional) - Special instructions for the artist. Must be very specific.</li><li><strong><em>quantity</em></strong> (optional) - The number of copies of this item. 1 is the only allowed value.</li><li><p><strong><em>options</em></strong> (optional) - The key=value options for this item. Must be a comma separated string list of {key}={value} pairs. Example: stretching=stretched,style=photorealistic</p><p>The only available option at the moment is "stretching=stretched".</p></li><li><strong><em>file</em></strong> (required) - A file attachment. Must be a JPG file. Only 1 file is allowed per request. The file name will be used as the key to reference this item in the order.</li></ul><p>You&#39;ll get back a URI to the uploaded image, and an object containing details about pricing for the item.</p><pre><code>{
+  "uri": "https://instp.imgix.net/53d33e6d1d41c8543bc2d1f2_MyPic.jpg",
+  "pricing" : {
+    "fees" : {
+      "stretching" : 1000
+    },
+    "dimensions" : {
+      "height" : 22,
+      "width" : 22
+    },
+    "price" : 12503,
+    "option_prices" : {
+      "stretching" : {
+        "rolled" : -10000,
+        "stretched" : 0
+      }
+    },
+    "min_size" : [
+      150,
+      150
+    ],
+    "aspect_ratio" : 1,
+    "shipping" : 1200
+  }
+}
+</code></pre><p><strong><em>fees</em></strong> is an object containing the option key names and the associated prices that have been applied to this item.</p><p><strong><em>price</em></strong> is the price of item before fees, shipping, and tax.</p><p><strong><em>option_prices</em></strong> is an object of <em>option key names</em> and an object of available <em>option values</em> and their associated prices. These prices must be added to the <em>price</em> field.</p><p><strong><em>shipping</em></strong> is the shipping cost for this item. Currently shipping prices are stacked for all items in an order, though this will be changed soon.</p><h2 id=calculating-total-price>Calculating total price</h2><p>The total price is the <strong>price</strong> field + amounts in the <strong>fees</strong> object + the <strong>shipping</strong> field. Then add this up for all items in the order. The breakdown will be shown to the user again the the embeddable <strong>payment_uri</strong>.</p><h1 id=complete-the-order>Complete the order</h1><p>After items are added to the order, you can redirect the user to the <strong>payment_uri</strong> or embed it in an iframe or web view. This URI was returned to you when creating the order. You can also fetch it by requesting the Order through the API. If you embed it in an iframe on a web page, please make sure your web page is served over a valid HTTPS connection.</p><p>The payment page is a minimal UI page that is designed to fit into your existing design. In the future you will be able to customize the HTML and CSS on the page. This page will collect payment information as well as shipping information. After the user completes this step, you&#39;re done. We&#39;ll pay you the commission if the order is delivered, and we&#39;ll handle all customer service and fulfillment from hereon out.</p></div><div class="panel panel-default"><div class=panel-heading><h3 id=_orders class=panel-title>Orders</h3></div><div class=panel-body><div class=panel-group><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__orders><span class=parent></span>/orders</a> <span class=methods><a href=# data-toggle=modal data-target=#_orders_get><span class="badge badge_get">get</span></a> <a href=# data-toggle=modal data-target=#_orders_post><span class="badge badge_post">post</span></a></span></h4></div><div id=panel__orders class="panel-collapse collapse"><div class=panel-body><div class=list-group><a href=# data-toggle=modal data-target=#_orders_get class=list-group-item><span class="badge badge_get">get</span><div class=method_description><p>List all orders</p></div><div class=clearfix></div></a> <a href=# data-toggle=modal data-target=#_orders_post class=list-group-item><span class="badge badge_post">post</span><div class=method_description><p>Create a new order. All parameters here are optional. This method accepts either a JSON payload or urlencoded form fields.</p></div><div class=clearfix></div></a></div></div></div><div class="modal fade" tabindex=0 id=_orders_get><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_get">get</span> <span class=parent></span>/orders</h4></div><div class=modal-body><div class="alert alert-info"><p>List all orders</p></div><ul class="nav nav-tabs"><li class=active><a href=#_orders_get_request data-toggle=tab>Request</a></li><li><a href=#_orders_get_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=_orders_get_request><h3>Headers</h3><ul><li><strong>Accept</strong>: <em>(string)</em><p>Is used to set specified media type.</p></li></ul><h3>Query Parameters</h3><ul><li><strong>page</strong> <em>(number)</em><p>The page to return</p></li><li><strong>limit</strong> <em>(number)</em><p>Items per page</p></li></ul></div><div class=tab-pane id=_orders_get_response><h2>HTTP status code <a href=http://httpstatus.es/200 target=_blank>200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><small><strong>Example</strong>:<pre><code>[{
+  "id" : "53d33e6d1d41c8543bc2d1f2",
+  "shipment_error" : null,
+  "status" : 0,
+  "total" : null,
+  "payment_uri" : "https://instapainting.com/orders/build/53d33e6d1d41c8543bc2d1f2?partner=1",
+  "items" : [
+    {
+      "quantity" : 1,
+      "dimensions" : {
+        "height" : 22,
+        "width" : 22
+      },
+      "options" : [
+        {
+          "value" : "stretched",
+          "name" : "stretching"
+        }
+      ],
+      "preview" : null,
+      "pricing" : {
+        "fees" : {
+          "stretching" : 1000
+        },
+        "dimensions" : {
+          "height" : 22,
+          "width" : 22
+        },
+        "price" : 12503,
+        "option_prices" : {
+          "stretching" : {
+            "rolled" : 0,
+            "stretched" : 1000
+          }
+        },
+        "minSize" : [
+          150,
+          150
+        ],
+        "aspectRatio" : 1,
+        "shipping" : 1200
+      },
+      "qc_status" : null,
+      "coords" : {
+        "x" : 0,
+        "y" : 0,
+        "y2" : 300,
+        "x2" : 300
+      },
+      "price" : null,
+      "key" : "53d33e6d1d41c8543bc2d1f2_MyPic.jpg",
+      "redo_count" : 0,
+      "fix_count" : 0,
+      "instructions_read" : null,
+      "instructions" : null
+    }
+  ],
+  "ready_to_ship" : false,
+  "options" : [],
+  "schedule" : null,
+  "qc_passed" : null,
+  "name" : null,
+  "tracking_number" : null,
+  "user" : null,
+  "email" : null,
+  "timestamp" : 1406367405,
+  "phone" : null,
+  "subtotal" : null,
+  "user_identifier" : null,
+  "shipment_dimensions" : null,
+  "notes" : null,
+  "campaign" : null,
+  "address" : null
+}]
+</code></pre></small></p><h2>HTTP status code <a href=http://httpstatus.es/404 target=_blank>404</a></h2></div></div></div></div></div></div><div class="modal fade" tabindex=0 id=_orders_post><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_post">post</span> <span class=parent></span>/orders</h4></div><div class=modal-body><div class="alert alert-info"><p>Create a new order. All parameters here are optional. This method accepts either a JSON payload or urlencoded form fields.</p></div><ul class="nav nav-tabs"><li class=active><a href=#_orders_post_request data-toggle=tab>Request</a></li><li><a href=#_orders_post_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=_orders_post_request><h3>Headers</h3><ul><li><strong>Accept</strong>: <em>(string)</em><p>Is used to set specified media type.</p></li></ul><h3>Query Parameters</h3><ul><li><strong>page</strong> <em>(number)</em><p>The page to return</p></li><li><strong>limit</strong> <em>(number)</em><p>Items per page</p></li></ul><h3>Body</h3><p><strong>Type: application/x-www-form-urlencoded</strong></p><strong>Form Parameters</strong><ul><li><strong>name</strong>: <em>(string)</em><p>Customer&#39;s full name</p></li><li><strong>phone</strong>: <em>(string)</em><p>Customer&#39;s phone number with country code</p><p><small><strong>Example</strong>:<pre><code>17074567840</code></pre></small></p></li><li><strong>email</strong>: <em>(string)</em><p>Customer&#39;s email address</p></li><li><strong>campaign</strong>: <em>(string)</em><p>An arbitrary string you can attach to the order for tracking purposes</p><p><small><strong>Example</strong>:<pre><code>adwords123</code></pre></small></p></li><li><strong>notes</strong>: <em>(string)</em><p>A list of special requests for the artist, separated by "|" (pipes)</p><p><small><strong>Example</strong>:<pre><code>Make the eyes slightly bigger|Remove the background</code></pre></small></p></li><li><strong>user_identifier</strong>: <em>(string)</em><p>An arbitrary string to identify the user. For example, you can use your own user ID field here</p></li></ul><p><strong>Type: application/json</strong></p></div><div class=tab-pane id=_orders_post_response><h2>HTTP status code <a href=http://httpstatus.es/200 target=_blank>200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><small><strong>Example</strong>:<pre><code>{
+  "id": "53d33e6d1d41c8543bc2d1f2",
+  "payment_uri": "https://instapainting.com/orders/build/53d33e6d1d41c8543bc2d1f2?partner=1"
+}
+</code></pre></small></p></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__orders__orderId_><span class=parent>/orders</span>/{orderId}</a> <span class=methods><a href=# data-toggle=modal data-target=#_orders__orderId__get><span class="badge badge_get">get</span></a> <a href=# data-toggle=modal data-target=#_orders__orderId__patch><span class="badge badge_patch">patch</span></a></span></h4></div><div id=panel__orders__orderId_ class="panel-collapse collapse"><div class=panel-body><div class=list-group><a href=# data-toggle=modal data-target=#_orders__orderId__get class=list-group-item><span class="badge badge_get">get</span><div class=method_description><p>Get an order</p></div><div class=clearfix></div></a> <a href=# data-toggle=modal data-target=#_orders__orderId__patch class=list-group-item><span class="badge badge_patch">patch</span><div class=method_description><p>Update an order</p></div><div class=clearfix></div></a></div></div></div><div class="modal fade" tabindex=0 id=_orders__orderId__get><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_get">get</span> <span class=parent>/orders</span>/{orderId}</h4></div><div class=modal-body><div class="alert alert-info"><p>Get an order</p></div><ul class="nav nav-tabs"><li class=active><a href=#_orders__orderId__get_request data-toggle=tab>Request</a></li><li><a href=#_orders__orderId__get_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=_orders__orderId__get_request><h3>URI Parameters</h3><ul><li><strong>orderId</strong>: <em>required (string)</em></li></ul><h3>Headers</h3><ul><li><strong>Accept</strong>: <em>(string)</em><p>Is used to set specified media type.</p></li></ul></div><div class=tab-pane id=_orders__orderId__get_response><h2>HTTP status code <a href=http://httpstatus.es/200 target=_blank>200</a></h2><p>Order object, including all items, returned</p><h3>Body</h3><p><strong>Type: application/json</strong></p><p><small><strong>Example</strong>:<pre><code>{
+  "id" : "53d33e6d1d41c8543bc2d1f2",
+  "shipment_error" : null,
+  "status" : 0,
+  "total" : null,
+  "payment_uri" : "https://instapainting.com/orders/build/53d33e6d1d41c8543bc2d1f2?partner=1",
+  "items" : [
+    {
+      "quantity" : 1,
+      "dimensions" : {
+        "height" : 22,
+        "width" : 22
+      },
+      "options" : [
+        {
+          "value" : "stretched",
+          "name" : "stretching"
+        }
+      ],
+      "preview" : null,
+      "pricing" : {
+        "fees" : {
+          "stretching" : 1000
+        },
+        "dimensions" : {
+          "height" : 22,
+          "width" : 22
+        },
+        "price" : 12503,
+        "option_prices" : {
+          "stretching" : {
+            "rolled" : 0,
+            "stretched" : 1000
+          }
+        },
+        "minSize" : [
+          150,
+          150
+        ],
+        "aspectRatio" : 1,
+        "shipping" : 1200
+      },
+      "qc_status" : null,
+      "coords" : {
+        "x" : 0,
+        "y" : 0,
+        "y2" : 300,
+        "x2" : 300
+      },
+      "price" : null,
+      "key" : "53d33e6d1d41c8543bc2d1f2_MyPic.jpg",
+      "redo_count" : 0,
+      "fix_count" : 0,
+      "instructions_read" : null,
+      "instructions" : null
+    }
+  ],
+  "ready_to_ship" : false,
+  "options" : [],
+  "schedule" : null,
+  "qc_passed" : null,
+  "name" : null,
+  "tracking_number" : null,
+  "user" : null,
+  "email" : null,
+  "timestamp" : 1406367405,
+  "phone" : null,
+  "subtotal" : null,
+  "user_identifier" : null,
+  "shipment_dimensions" : null,
+  "notes" : null,
+  "campaign" : null,
+  "address" : null
+}
+</code></pre></small></p><h2>HTTP status code <a href=http://httpstatus.es/404 target=_blank>404</a></h2></div></div></div></div></div></div><div class="modal fade" tabindex=0 id=_orders__orderId__patch><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_patch">patch</span> <span class=parent>/orders</span>/{orderId}</h4></div><div class=modal-body><div class="alert alert-info"><p>Update an order</p></div><ul class="nav nav-tabs"><li class=active><a href=#_orders__orderId__patch_request data-toggle=tab>Request</a></li><li><a href=#_orders__orderId__patch_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=_orders__orderId__patch_request><h3>URI Parameters</h3><ul><li><strong>orderId</strong>: <em>required (string)</em></li></ul><h3>Headers</h3><ul><li><strong>Accept</strong>: <em>(string)</em><p>Is used to set specified media type.</p></li></ul><h3>Body</h3><p><strong>Type: application/x-www-form-urlencoded</strong></p><strong>Form Parameters</strong><ul><li><strong>name</strong>: <em>(string)</em><p>Customer&#39;s full name</p></li><li><strong>phone</strong>: <em>(string)</em><p>Customer&#39;s phone number with country code</p><p><small><strong>Example</strong>:<pre><code>17074567840</code></pre></small></p></li><li><strong>email</strong>: <em>(string)</em><p>Customer&#39;s email address</p></li><li><strong>campaign</strong>: <em>(string)</em><p>An arbitrary string you can attach to the order for tracking purposes</p><p><small><strong>Example</strong>:<pre><code>adwords123</code></pre></small></p></li><li><strong>notes</strong>: <em>(string)</em><p>A list of special requests for the artist, separated by "|" (pipes)</p><p><small><strong>Example</strong>:<pre><code>Make the eyes slightly bigger|Remove the background</code></pre></small></p></li><li><strong>user_identifier</strong>: <em>(string)</em><p>An arbitrary string to identify the user. For example, you can use your own user ID field here</p></li></ul><p><strong>Type: application/json</strong></p></div><div class=tab-pane id=_orders__orderId__patch_response><h2>HTTP status code <a href=http://httpstatus.es/200 target=_blank>200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><small><strong>Example</strong>:<pre><code>{
+  "id" : "53d33e6d1d41c8543bc2d1f2",
+  "shipment_error" : null,
+  "status" : 0,
+  "total" : null,
+  "payment_uri" : "https://instapainting.com/orders/build/53d33e6d1d41c8543bc2d1f2?partner=1",
+  "items" : [
+    {
+      "quantity" : 1,
+      "dimensions" : {
+        "height" : 22,
+        "width" : 22
+      },
+      "options" : [
+        {
+          "value" : "stretched",
+          "name" : "stretching"
+        }
+      ],
+      "preview" : null,
+      "pricing" : {
+        "fees" : {
+          "stretching" : 1000
+        },
+        "dimensions" : {
+          "height" : 22,
+          "width" : 22
+        },
+        "price" : 12503,
+        "option_prices" : {
+          "stretching" : {
+            "rolled" : 0,
+            "stretched" : 1000
+          }
+        },
+        "minSize" : [
+          150,
+          150
+        ],
+        "aspectRatio" : 1,
+        "shipping" : 1200
+      },
+      "qc_status" : null,
+      "coords" : {
+        "x" : 0,
+        "y" : 0,
+        "y2" : 300,
+        "x2" : 300
+      },
+      "price" : null,
+      "key" : "53d33e6d1d41c8543bc2d1f2_MyPic.jpg",
+      "redo_count" : 0,
+      "fix_count" : 0,
+      "instructions_read" : null,
+      "instructions" : null
+    }
+  ],
+  "ready_to_ship" : false,
+  "options" : [],
+  "schedule" : null,
+  "qc_passed" : null,
+  "name" : null,
+  "tracking_number" : null,
+  "user" : null,
+  "email" : null,
+  "timestamp" : 1406367405,
+  "phone" : null,
+  "subtotal" : null,
+  "user_identifier" : null,
+  "shipment_dimensions" : null,
+  "notes" : null,
+  "campaign" : null,
+  "address" : null
+}
+</code></pre></small></p></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__orders__orderId__items><span class=parent>/orders/{orderId}</span>/items</a> <span class=methods><a href=# data-toggle=modal data-target=#_orders__orderId__items_post><span class="badge badge_post">post</span></a></span></h4></div><div id=panel__orders__orderId__items class="panel-collapse collapse"><div class=panel-body><div class=list-group><a href=# data-toggle=modal data-target=#_orders__orderId__items_post class=list-group-item><span class="badge badge_post">post</span><div class=method_description><p>Add an item to an order</p></div><div class=clearfix></div></a></div></div></div><div class="modal fade" tabindex=0 id=_orders__orderId__items_post><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_post">post</span> <span class=parent>/orders/{orderId}</span>/items</h4></div><div class=modal-body><div class="alert alert-info"><p>Add an item to an order</p></div><ul class="nav nav-tabs"><li class=active><a href=#_orders__orderId__items_post_request data-toggle=tab>Request</a></li><li><a href=#_orders__orderId__items_post_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=_orders__orderId__items_post_request><h3>URI Parameters</h3><ul><li><strong>orderId</strong>: <em>required (string)</em></li></ul><h3>Headers</h3><ul><li><strong>Accept</strong>: <em>(string)</em><p>Is used to set specified media type.</p></li></ul><h3>Body</h3><p><strong>Type: multipart/form-data</strong></p><strong>Form Parameters</strong><ul><li><strong>width</strong>: <em>required (number)</em><p>Width of the painted area inches.</p><p><small><strong>Example</strong>:<pre><code>22</code></pre></small></p></li><li><strong>height</strong>: <em>required (number)</em><p>Height of the painted area inches.</p><p><small><strong>Example</strong>:<pre><code>22</code></pre></small></p></li><li><strong>coords</strong>: <em>required (string)</em><p>Comma separated absolute pixel coordinates of the attached JPG file to paint. Must be in the format x,y,x2,y2. A rectangle will be drawn between the points x,y and x2,y2. x2 and y2 must be greater than x and y, respectively.</p><p><small><strong>Example</strong>:<pre><code>0,0,500,500</code></pre></small></p></li><li><strong>options</strong>: <em>(string)</em><p>Additional options for this in the form of comma separated key-value pairs. Available options: stretching stretched Stretched on 3 cm thick fir wood stretcher bars. rolled Rolled and shipped in a protective tube.</p><p><small><strong>Example</strong>:<pre><code>stretching=stretched,style=photorealistic</code></pre></small></p></li><li><strong>quantity</strong>: <em>(integer)</em><p>How many copies of this to order. At the moment, only 1 is allowed.</p></li><li><strong>instructions</strong>: <em>(string)</em><p>Pipe (|) separated list of special instructions for the artist.</p><p><small><strong>Example</strong>:<pre><code>Lighten the shadows under the eyes|remove the people in the background</code></pre></small></p></li><li><strong>file</strong>: <em>(string)</em></li></ul></div><div class=tab-pane id=_orders__orderId__items_post_response><h2>HTTP status code <a href=http://httpstatus.es/200 target=_blank>200</a></h2><p>The URI of the image and a pricing object is returned.</p><h3>Body</h3><p><strong>Type: application/json</strong></p><p><small><strong>Example</strong>:<pre><code>{
+  "uri": "https://instp.imgix.net/53d33e6d1d41c8543bc2d1f2_MyPic.jpg",
+  "pricing" : {
+    "fees" : {
+      "stretching" : 1000
+    },
+    "dimensions" : {
+      "height" : 22,
+      "width" : 22
+    },
+    "price" : 12503,
+    "option_prices" : {
+      "stretching" : {
+        "rolled" : 0,
+        "stretched" : 1000
+      }
+    },
+    "minSize" : [
+      150,
+      150
+    ],
+    "aspectRatio" : 1,
+    "shipping" : 1200
+  }
+}
+</code></pre></small></p></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__orders__orderId__items__fileName_><span class=parent>/orders/{orderId}/items</span>/{fileName}</a> <span class=methods><a href=# data-toggle=modal data-target=#_orders__orderId__items__fileName__patch><span class="badge badge_patch">patch</span></a> <a href=# data-toggle=modal data-target=#_orders__orderId__items__fileName__delete><span class="badge badge_delete">delete</span></a></span></h4></div><div id=panel__orders__orderId__items__fileName_ class="panel-collapse collapse"><div class=panel-body><div class=list-group><a href=# data-toggle=modal data-target=#_orders__orderId__items__fileName__patch class=list-group-item><span class="badge badge_patch">patch</span><div class=method_description><p>Update details of an item</p></div><div class=clearfix></div></a> <a href=# data-toggle=modal data-target=#_orders__orderId__items__fileName__delete class=list-group-item><span class="badge badge_delete">delete</span><div class=method_description><p>This method will <em>delete</em> an <strong>item</strong> from an order</p></div><div class=clearfix></div></a></div></div></div><div class="modal fade" tabindex=0 id=_orders__orderId__items__fileName__patch><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_patch">patch</span> <span class=parent>/orders/{orderId}/items</span>/{fileName}</h4></div><div class=modal-body><div class="alert alert-info"><p>Update details of an item</p></div><ul class="nav nav-tabs"><li class=active><a href=#_orders__orderId__items__fileName__patch_request data-toggle=tab>Request</a></li><li><a href=#_orders__orderId__items__fileName__patch_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=_orders__orderId__items__fileName__patch_request><h3>URI Parameters</h3><ul><li><strong>orderId</strong>: <em>required (string)</em></li><li><strong>File name or file key</strong>: <em>required (string)</em></li></ul><h3>Headers</h3><ul><li><strong>Accept</strong>: <em>(string)</em><p>Is used to set specified media type.</p></li></ul></div><div class=tab-pane id=_orders__orderId__items__fileName__patch_response><h2>HTTP status code <a href=http://httpstatus.es/200 target=_blank>200</a></h2><p>A pricing object is returned.</p><h3>Body</h3><p><strong>Type: application/json</strong></p><p><small><strong>Example</strong>:<pre><code>{
+  "pricing" : {
+    "fees" : {
+      "stretching" : 1000
+    },
+    "dimensions" : {
+      "height" : 22,
+      "width" : 22
+    },
+    "price" : 12503,
+    "option_prices" : {
+      "stretching" : {
+        "rolled" : 0,
+        "stretched" : 1000
+      }
+    },
+    "minSize" : [
+      150,
+      150
+    ],
+    "aspectRatio" : 1,
+    "shipping" : 1200
+  }
+}
+</code></pre></small></p></div></div></div></div></div></div><div class="modal fade" tabindex=0 id=_orders__orderId__items__fileName__delete><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_delete">delete</span> <span class=parent>/orders/{orderId}/items</span>/{fileName}</h4></div><div class=modal-body><div class="alert alert-info"><p>This method will <em>delete</em> an <strong>item</strong> from an order</p></div><ul class="nav nav-tabs"><li class=active><a href=#_orders__orderId__items__fileName__delete_request data-toggle=tab>Request</a></li><li><a href=#_orders__orderId__items__fileName__delete_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=_orders__orderId__items__fileName__delete_request><h3>URI Parameters</h3><ul><li><strong>orderId</strong>: <em>required (string)</em></li><li><strong>File name or file key</strong>: <em>required (string)</em></li></ul><h3>Headers</h3><ul><li><strong>Accept</strong>: <em>(string)</em><p>Is used to set specified media type.</p></li></ul></div><div class=tab-pane id=_orders__orderId__items__fileName__delete_response><h2>HTTP status code <a href=http://httpstatus.es/204 target=_blank>204</a></h2><p>Item removed.</p><h2>HTTP status code <a href=http://httpstatus.es/404 target=_blank>404</a></h2></div></div></div></div></div></div></div></div></div></div></div><div class=col-md-3><div id=sidebar class="hidden-print affix" role=complementary><ul class="nav nav-pills nav-stacked"><li><a href=#_orders>Orders</a></li></ul></div></div></div></div></body></html>
