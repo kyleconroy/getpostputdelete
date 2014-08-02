@@ -34,7 +34,7 @@ You're in a fantastic place to provide APIs that never break. Since each API on
 Blockspring is a single file, you should be storing versions of that file in
 git, or some kind of scm system.
 
-When a user makes requests to an API, let them specify a revision of commit
+When a user makes requests to an API, let them specify a revision or commit
 hash as a version, like so.
 
     Accept: application/json; version=d709334
